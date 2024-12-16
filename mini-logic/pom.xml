@@ -11,5 +11,12 @@
 
     <artifactId>mini-logic</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>wxdgaming.spring.minigame</groupId>
+            <artifactId>mini-server</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
 
 </project>
