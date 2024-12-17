@@ -56,6 +56,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext run = SpringApplication.run(Main.class, args);
         loadServer(run, 1);
+        loadServer(run, 2);
+        loadServer(run, 3);
         // loadServer(run);
     }
 
@@ -71,10 +73,10 @@ public class Main {
         );
         JdbcHelper jdbcHelper = run.getBean(JdbcHelper.class);
         DruidSourceConfig copy = jdbcHelper.getDb().copy("s" + sid);
-        copy.createDatabase();
         copy.setShowSql(true);
         // copy.setDialect(org.hibernate.dialect.H2Dialect.class.getName());
         copy.setPackageNames(new String[]{EntityScan.class.getPackageName(), Player.class.getPackageName()});
+        copy.createDatabase();
         DruidDataSource dataSource = copy.toDataSource();
         EntityManager entityManager = copy.entityManagerFactory(dataSource, Map.of());
         JdbcContext jdbcContext = new JdbcContext(dataSource, entityManager);
