@@ -17,6 +17,7 @@
     <modules>
         <module>mini-server</module>
         <module>mini-logic</module>
+        <module>mini-entity</module>
     </modules>
 
 

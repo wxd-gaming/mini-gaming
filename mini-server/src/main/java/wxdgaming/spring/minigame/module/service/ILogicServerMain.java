@@ -1,5 +1,7 @@
 package wxdgaming.spring.minigame.module.service;
 
+import org.springframework.context.ConfigurableApplicationContext;
+import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.net.SocketSession;
 
 /**
@@ -10,7 +12,7 @@ import wxdgaming.spring.boot.net.SocketSession;
  **/
 public interface ILogicServerMain {
 
-    void init();
+    void init(ConfigurableApplicationContext parent, ClassLoader parentClassLoad, JdbcContext jdbcContext);
 
     void onLogin(SocketSession session);
 

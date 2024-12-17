@@ -9,19 +9,12 @@
         <version>1.0.1</version>
     </parent>
 
-    <artifactId>mini-logic</artifactId>
+    <artifactId>mini-entity</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>wxdgaming.spring.minigame</groupId>
-            <artifactId>mini-server</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>wxdgaming.spring.minigame</groupId>
-            <artifactId>mini-entity</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-    </dependencies>
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
 </project>
