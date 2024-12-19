@@ -15,11 +15,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>mini-server</module>
-        <module>mini-logic</module>
-        <module>mini-entity</module>
-        <module>mini-start</module>
         <module>mini-cfg</module>
+        <module>mini-entity</module>
+        <module>mini-logic</module>
+        <module>mini-start</module>
     </modules>
 
 

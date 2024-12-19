@@ -1,7 +1,6 @@
 package wxdgaming.spring.minigame.start;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.sun.tools.javac.Main;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -57,7 +56,7 @@ public class MiniGameStart {
 
 
     public static void main(String[] args) throws Exception {
-        ConfigurableApplicationContext run = SpringApplication.run(Main.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(MiniGameStart.class, args);
         DataCenter dataCenter = run.getBean(DataCenter.class);
         loadServer(run, dataCenter, 1);
         loadServer(run, dataCenter, 2);
@@ -67,7 +66,7 @@ public class MiniGameStart {
 
     public static void loadServer(ConfigurableApplicationContext run, DataCenter dataCenter, int sid) throws Exception {
         ClassDirLoader classLoader = new JavaCoderCompile()
-                .parentClassLoader(Main.class.getClassLoader())
+                .parentClassLoader(MiniGameStart.class.getClassLoader())
                 .compilerJava("mini-logic/src/main/java")
                 .classLoader("target/scripts");
 

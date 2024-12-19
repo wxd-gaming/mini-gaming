@@ -1,9 +1,12 @@
 package wxdgaming.spring.minigame.logic;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import wxdgaming.spring.boot.core.SpringUtil;
+import wxdgaming.spring.boot.core.ann.Start;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
@@ -17,22 +20,33 @@ import wxdgaming.spring.minigame.start.ILogicServerMain;
  * @version: 2024-12-16 16:35
  **/
 @Slf4j
+
 public class LogicServerMain implements ILogicServerMain {
 
+    @Getter static AnnotationConfigApplicationContext childContext = null;
+
     @Override public void init(ConfigurableApplicationContext parent, ClassLoader classLoader, JdbcContext jdbcContext) {
-        AnnotationConfigApplicationContext childContext = new AnnotationConfigApplicationContext();
+        childContext = new AnnotationConfigApplicationContext();
         // 创建子容器
         childContext.setParent(parent);
         childContext.setEnvironment(parent.getEnvironment());
         childContext.setApplicationStartup(parent.getApplicationStartup());
         childContext.setClassLoader(classLoader);
-        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(JdbcContext.class, () -> jdbcContext);
-        childContext.registerBeanDefinition("jdbcContext", beanDefinitionBuilder.getRawBeanDefinition());
+        {
+            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(LogicServerMain.class, () -> this);
+            childContext.registerBeanDefinition(LogicServerMain.class.getSimpleName(), beanDefinitionBuilder.getRawBeanDefinition());
+        }
+        {
+            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(JdbcContext.class, () -> jdbcContext);
+            childContext.registerBeanDefinition("jdbcContext", beanDefinitionBuilder.getRawBeanDefinition());
+        }
+
         // 设置扫描类
         childContext.register(LogicScan.class);
         // 刷新子容器以完成初始化
         childContext.refresh();
 
+        SpringUtil.executor(childContext, Start.class);
 
         DataCenter bean = childContext.getBean(DataCenter.class);
         bean.setJdbcContext(jdbcContext);
@@ -41,7 +55,6 @@ public class LogicServerMain implements ILogicServerMain {
         player.setOpenId("test");
         player.setNickName("test");
         jdbcContext.save(player);
-
     }
 
     @Override
