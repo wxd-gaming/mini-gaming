@@ -18,6 +18,8 @@
         <module>mini-server</module>
         <module>mini-logic</module>
         <module>mini-entity</module>
+        <module>mini-start</module>
+        <module>mini-cfg</module>
     </modules>
 
 
@@ -88,11 +90,6 @@
         <dependency>
             <groupId>wxdgaming.spring.boot</groupId>
             <artifactId>wxdgaming.spring.boot.net</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>wxdgaming.spring.boot</groupId>
-            <artifactId>wxdgaming.spring.boot.net-broker</artifactId>
             <version>1.0.1</version>
         </dependency>
         <dependency>

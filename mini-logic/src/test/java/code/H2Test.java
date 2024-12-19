@@ -8,8 +8,8 @@ import wxdgaming.spring.boot.core.format.HexId;
 import wxdgaming.spring.boot.data.MyTestEntity;
 import wxdgaming.spring.boot.data.batis.DruidSourceConfig;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
-import wxdgaming.spring.minigame.logic.bean.entity.EntityScan;
-import wxdgaming.spring.minigame.logic.bean.entity.user.Player;
+import wxdgaming.spring.minigame.bean.entity.EntityScan;
+import wxdgaming.spring.minigame.bean.entity.user.Player;
 
 import java.util.ArrayList;
 import java.util.List;

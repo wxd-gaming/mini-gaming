@@ -8,7 +8,7 @@ import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
-import wxdgaming.spring.minigame.module.service.ILogicServerMain;
+import wxdgaming.spring.minigame.start.ILogicServerMain;
 
 /**
  * 逻辑服务主入口

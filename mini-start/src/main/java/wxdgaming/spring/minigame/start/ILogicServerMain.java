@@ -1,4 +1,4 @@
-package wxdgaming.spring.minigame.module.service;
+package wxdgaming.spring.minigame.start;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import wxdgaming.spring.boot.data.batis.JdbcContext;

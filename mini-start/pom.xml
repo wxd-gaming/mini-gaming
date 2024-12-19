@@ -9,8 +9,19 @@
         <version>1.0.1</version>
     </parent>
 
-    <artifactId>mini-server</artifactId>
+    <artifactId>mini-start</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>wxdgaming.spring.minigame</groupId>
+            <artifactId>mini-cfg</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>wxdgaming.spring.minigame</groupId>
+            <artifactId>mini-entity</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
 
 </project>

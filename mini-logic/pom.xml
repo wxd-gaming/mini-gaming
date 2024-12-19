@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>wxdgaming.spring.minigame</groupId>
-            <artifactId>mini-server</artifactId>
+            <artifactId>mini-start</artifactId>
             <version>1.0.1</version>
         </dependency>
         <dependency>
