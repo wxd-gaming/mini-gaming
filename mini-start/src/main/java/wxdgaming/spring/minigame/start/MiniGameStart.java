@@ -57,6 +57,7 @@ public class MiniGameStart {
 
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext run = SpringApplication.run(MiniGameStart.class, args);
+        run.getBean(MiniGameSpringReflect.class).content().executorAppStartMethod();
         DataCenter dataCenter = run.getBean(DataCenter.class);
         loadServer(run, dataCenter, 1);
         loadServer(run, dataCenter, 2);

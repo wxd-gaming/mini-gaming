@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import wxdgaming.spring.boot.core.SpringUtil;
-import wxdgaming.spring.boot.core.ann.Start;
+import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
@@ -20,7 +19,6 @@ import wxdgaming.spring.minigame.start.ILogicServerMain;
  * @version: 2024-12-16 16:35
  **/
 @Slf4j
-
 public class LogicServerMain implements ILogicServerMain {
 
     @Getter static AnnotationConfigApplicationContext childContext = null;
@@ -46,7 +44,7 @@ public class LogicServerMain implements ILogicServerMain {
         // 刷新子容器以完成初始化
         childContext.refresh();
 
-        SpringUtil.executor(childContext, Start.class);
+        childContext.getBean(LogicSpringReflect.class).content().executorMethod(LogicStart.class);
 
         DataCenter bean = childContext.getBean(DataCenter.class);
         bean.setJdbcContext(jdbcContext);
@@ -70,6 +68,10 @@ public class LogicServerMain implements ILogicServerMain {
     @Override
     public void onReceive(SocketSession session) {
 
+    }
+
+    @Override public Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) {
+        return null;
     }
 
     @Override

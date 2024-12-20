@@ -20,6 +20,8 @@ public interface ILogicServerMain {
 
     void onReceive(SocketSession session);
 
+    Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams);
+
     void setCfg();
 
 }

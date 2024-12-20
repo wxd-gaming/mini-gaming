@@ -1,12 +1,11 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import wxdgaming.spring.boot.core.SpringReflectContext;
-import wxdgaming.spring.boot.core.ann.Start;
+import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.net.server.ServerMessageDispatcher;
-import wxdgaming.spring.minigame.logic.LogicServerMain;
+import wxdgaming.spring.boot.rpc.RpcService;
+import wxdgaming.spring.minigame.logic.LogicScan;
 import wxdgaming.spring.minigame.logic.LogicSpringReflect;
 
 /**
@@ -19,14 +18,13 @@ import wxdgaming.spring.minigame.logic.LogicSpringReflect;
 public class DispatchService extends ServerMessageDispatcher {
 
     public DispatchService() {
-        super(new String[]{"wxdgaming.spring.minigame.logic"});
+        super(new String[]{LogicScan.class.getPackageName()});
     }
 
-    @Start
-    public void init(@Qualifier("LogicServerMain") LogicServerMain logicServerMain, LogicSpringReflect context) {
-        ConfigurableApplicationContext childContext = logicServerMain.getChildContext();
-        SpringReflectContext build = SpringReflectContext.build(childContext);
-        super.initMapping(build);
+    @LogicStart
+    @Order(5000)
+    public void init(LogicSpringReflect context, RpcService rpcService) {
+        super.initMapping(context.content());
     }
 
 }
