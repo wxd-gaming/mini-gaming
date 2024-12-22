@@ -9,6 +9,7 @@ import wxdgaming.spring.boot.core.ann.ReLoad;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.boot.rpc.RpcDispatcher;
 import wxdgaming.spring.boot.rpc.RpcService;
+import wxdgaming.spring.minigame.start.ILogicServerMain;
 import wxdgaming.spring.minigame.start.module.data.DataCenter;
 
 /**
@@ -44,11 +45,15 @@ public class MiniGameRpcDispatcher extends RpcDispatcher {
 
     @Override public Object rpcReqSocketAction(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) throws Exception {
         if (targetId == 0) {
-            dataCenter.getServerMap().values().forEach(iLogicServerMain ->
-                    iLogicServerMain.onReceiveRpc(session, rpcToken, rpcId, targetId, path, remoteParams)
-            );
+            for (ILogicServerMain logicServerMain : dataCenter.getServerMap().values()) {
+                logicServerMain.onReceiveRpc(session, rpcToken, rpcId, targetId, path, remoteParams);
+            }
         } else {
-            return dataCenter.getServerMap().get((int) targetId).onReceiveRpc(session, rpcToken, rpcId, targetId, path, remoteParams);
+            ILogicServerMain iLogicServerMain = dataCenter.getServerMap().get((int) targetId);
+            if (iLogicServerMain == null) {
+                throw new RuntimeException("未知区服：" + targetId);
+            }
+            return iLogicServerMain.onReceiveRpc(session, rpcToken, rpcId, targetId, path, remoteParams);
         }
         return null;
     }

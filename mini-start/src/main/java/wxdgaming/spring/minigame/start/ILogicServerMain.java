@@ -12,7 +12,7 @@ import wxdgaming.spring.boot.net.SocketSession;
  **/
 public interface ILogicServerMain {
 
-    void init(ConfigurableApplicationContext parent, ClassLoader parentClassLoad, JdbcContext jdbcContext);
+    void init(ConfigurableApplicationContext parent, ClassLoader parentClassLoad, JdbcContext jdbcContext, int sid);
 
     void onLogin(SocketSession session);
 
@@ -20,7 +20,7 @@ public interface ILogicServerMain {
 
     void onReceive(SocketSession session);
 
-    Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams);
+    Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) throws Exception;
 
     void setCfg();
 

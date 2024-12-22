@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.PropertySource;
 import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
+import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 
 /**
@@ -18,16 +20,29 @@ import wxdgaming.spring.minigame.start.ILogicServerMain;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-16 16:35
  **/
+@Getter
 @Slf4j
 public class LogicServerMain implements ILogicServerMain {
 
-    @Getter static AnnotationConfigApplicationContext childContext = null;
+    int sid;
+    JdbcContext jdbcContext;
+    AnnotationConfigApplicationContext childContext = null;
 
-    @Override public void init(ConfigurableApplicationContext parent, ClassLoader classLoader, JdbcContext jdbcContext) {
+    @Override public void init(ConfigurableApplicationContext parent, ClassLoader classLoader, JdbcContext jdbcContext, int sid) {
+        this.sid = sid;
+        this.jdbcContext = jdbcContext;
+
         childContext = new AnnotationConfigApplicationContext();
         // 创建子容器
         childContext.setParent(parent);
-        childContext.setEnvironment(parent.getEnvironment());
+        childContext.getEnvironment().merge(parent.getEnvironment());
+        // childContext.setEnvironment(parent.getEnvironment());
+        childContext.getEnvironment().getPropertySources().addLast(new PropertySource<Integer>("sid", sid) {
+            @Override public Object getProperty(String name) {
+                if (this.getName().equals(name)) return sid;
+                return null;
+            }
+        });
         childContext.setApplicationStartup(parent.getApplicationStartup());
         childContext.setClassLoader(classLoader);
         {
@@ -70,8 +85,8 @@ public class LogicServerMain implements ILogicServerMain {
 
     }
 
-    @Override public Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) {
-        return null;
+    @Override public Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) throws Exception {
+        return childContext.getBean(LogicRpcDispatcher.class).rpcReqSocketAction(session, rpcToken, rpcId, targetId, path, remoteParams);
     }
 
     @Override

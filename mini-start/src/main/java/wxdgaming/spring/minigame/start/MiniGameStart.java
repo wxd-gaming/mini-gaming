@@ -1,6 +1,7 @@
 package wxdgaming.spring.minigame.start;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.fastjson.JSONObject;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -9,8 +10,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import reactor.core.publisher.Mono;
 import wxdgaming.spring.boot.core.CoreScan;
 import wxdgaming.spring.boot.core.ReflectContext;
+import wxdgaming.spring.boot.core.Throw;
 import wxdgaming.spring.boot.core.loader.ClassDirLoader;
 import wxdgaming.spring.boot.core.loader.JavaCoderCompile;
 import wxdgaming.spring.boot.data.DataScan;
@@ -20,6 +23,9 @@ import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.data.batis.JdbcHelper;
 import wxdgaming.spring.boot.data.redis.DataRedisScan;
 import wxdgaming.spring.boot.net.NetScan;
+import wxdgaming.spring.boot.net.SocketSession;
+import wxdgaming.spring.boot.net.client.TcpSocketClient;
+import wxdgaming.spring.boot.rpc.RpcDispatcher;
 import wxdgaming.spring.boot.rpc.RpcScan;
 import wxdgaming.spring.boot.web.WebScan;
 import wxdgaming.spring.boot.webclient.WebClientScan;
@@ -63,6 +69,32 @@ public class MiniGameStart {
         loadServer(run, dataCenter, 2);
         loadServer(run, dataCenter, 3);
         // loadServer(run);
+
+
+        RpcDispatcher rpcDispatcher = run.getBean(RpcDispatcher.class);
+        try {
+            SocketSession session = run.getBean(TcpSocketClient.class).idleSession();
+            rpcDispatcher
+                    .request(session, 2, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .subscribe(str -> log.debug("{}", str));
+
+
+            rpcDispatcher
+                    .request(session, 1, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .subscribe(str -> log.debug("{}", str));
+
+            rpcDispatcher
+                    .request(session, 3, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .subscribe(str -> log.debug("{}", str));
+
+
+            rpcDispatcher
+                    .request(session, 30, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .subscribe(str -> log.debug("{}", str));
+
+        } catch (Exception e) {
+            log.error("{}", Throw.ofString(e, false));
+        }
     }
 
     public static void loadServer(ConfigurableApplicationContext run, DataCenter dataCenter, int sid) throws Exception {
@@ -88,7 +120,7 @@ public class MiniGameStart {
                 .withSuper(ILogicServerMain.class)
                 .findFirst().get();
         ILogicServerMain iLogicServerMain = iLogicServerMainContent.getCls().getDeclaredConstructor().newInstance();
-        iLogicServerMain.init(run, classLoader, jdbcContext);
+        iLogicServerMain.init(run, classLoader, jdbcContext, sid);
 
         dataCenter.getServerMap().put(sid, iLogicServerMain);
 
