@@ -23,7 +23,7 @@ public class GMSpi implements InitPrint {
 
     @RPC("logic-rpc")
     public String logicRpc(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc {}", sid);
+        log.info("logic-rpc 区服：{}", sid);
         return "logic-rpc-ok";
     }
 

@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import reactor.core.publisher.Mono;
 import wxdgaming.spring.boot.core.CoreScan;
 import wxdgaming.spring.boot.core.ReflectContext;
 import wxdgaming.spring.boot.core.Throw;
@@ -76,21 +75,21 @@ public class MiniGameStart {
             SocketSession session = run.getBean(TcpSocketClient.class).idleSession();
             rpcDispatcher
                     .request(session, 2, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("{}", str));
+                    .subscribe(str -> log.debug("2服 {}", str));
 
 
             rpcDispatcher
                     .request(session, 1, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("{}", str));
+                    .subscribe(str -> log.debug("1服 {}", str));
 
             rpcDispatcher
                     .request(session, 3, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("{}", str));
+                    .subscribe(str -> log.debug("3服 {}", str));
 
 
             rpcDispatcher
                     .request(session, 30, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("{}", str));
+                    .subscribe(str -> log.debug("30服 {}", str));
 
         } catch (Exception e) {
             log.error("{}", Throw.ofString(e, false));

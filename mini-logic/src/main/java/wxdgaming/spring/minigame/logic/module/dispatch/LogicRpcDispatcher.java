@@ -4,9 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.net.SocketSession;
-import wxdgaming.spring.boot.net.server.ServerMessageDispatcher;
 import wxdgaming.spring.boot.rpc.RpcDispatcher;
-import wxdgaming.spring.boot.rpc.RpcService;
 import wxdgaming.spring.minigame.logic.LogicScan;
 import wxdgaming.spring.minigame.logic.LogicSpringReflect;
 
@@ -29,7 +27,7 @@ public class LogicRpcDispatcher extends RpcDispatcher {
         super.initMapping(context.content());
     }
 
-    @Override public Object rpcReqSocketAction(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) throws Exception {
-        return super.rpcReqSocketAction(session, this.getRPC_TOKEN(), rpcId, targetId, path, remoteParams);
+    @Override public Object rpcReqSocketAction(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
+        return super.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
     }
 }

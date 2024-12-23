@@ -43,17 +43,17 @@ public class MiniGameRpcDispatcher extends RpcDispatcher {
     }
 
 
-    @Override public Object rpcReqSocketAction(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) throws Exception {
+    @Override public Object rpcReqSocketAction(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
         if (targetId == 0) {
             for (ILogicServerMain logicServerMain : dataCenter.getServerMap().values()) {
-                logicServerMain.onReceiveRpc(session, rpcToken, rpcId, targetId, path, remoteParams);
+                logicServerMain.onReceiveRpc(session, rpcId, targetId, path, remoteParams);
             }
         } else {
             ILogicServerMain iLogicServerMain = dataCenter.getServerMap().get((int) targetId);
             if (iLogicServerMain == null) {
                 throw new RuntimeException("未知区服：" + targetId);
             }
-            return iLogicServerMain.onReceiveRpc(session, rpcToken, rpcId, targetId, path, remoteParams);
+            return iLogicServerMain.onReceiveRpc(session, rpcId, targetId, path, remoteParams);
         }
         return null;
     }

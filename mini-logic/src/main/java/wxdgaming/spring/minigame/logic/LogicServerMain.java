@@ -85,8 +85,8 @@ public class LogicServerMain implements ILogicServerMain {
 
     }
 
-    @Override public Object onReceiveRpc(SocketSession session, String rpcToken, long rpcId, long targetId, String path, String remoteParams) throws Exception {
-        return childContext.getBean(LogicRpcDispatcher.class).rpcReqSocketAction(session, rpcToken, rpcId, targetId, path, remoteParams);
+    @Override public Object onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
+        return childContext.getBean(LogicRpcDispatcher.class).rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
     }
 
     @Override
