@@ -1,18 +1,26 @@
 package wxdgaming.spring.minigame.logic;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.PropertySource;
 import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
+import wxdgaming.spring.boot.loader.BootClassLoader;
+import wxdgaming.spring.boot.loader.ExtendLoader;
+import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
 import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
+
+import java.io.InputStream;
 
 /**
  * 逻辑服务主入口
@@ -21,14 +29,31 @@ import wxdgaming.spring.minigame.start.ILogicServerMain;
  * @version: 2024-12-16 16:35
  **/
 @Getter
-@Slf4j
 public class LogicServerMain implements ILogicServerMain {
 
     int sid;
-    JdbcContext jdbcContext;
+    JdbcContext jdbcContext = null;
     AnnotationConfigApplicationContext childContext = null;
 
-    @Override public void init(ConfigurableApplicationContext parent, ClassLoader classLoader, JdbcContext jdbcContext, int sid) {
+    public static void resetLogback(ClassLoader classLoader, String logbackXml, String key, String value) {
+        // 加载logback.xml配置文件
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        lc.reset();
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(lc);
+        lc.putProperty(key, value);
+        InputStream resourceAsStream = classLoader.getResourceAsStream(logbackXml);
+        try {
+            configurator.doConfigure(resourceAsStream);
+        } catch (JoranException e) {
+            throw new RuntimeException(e);
+        }
+        LoggerFactory.getLogger("root").info("--------------- init end ---------------");
+    }
+
+    @Override public void init(ConfigurableApplicationContext parent, BootClassLoader classLoader, ExtendLoader extendLoader, JdbcContext jdbcContext, int sid) {
+        // System.setProperty("sid", String.valueOf(sid));
+        LogbackExtendLoader.resetLogback(extendLoader, "logback-logic.xml", "sid", String.valueOf(sid));
         this.sid = sid;
         this.jdbcContext = jdbcContext;
 
