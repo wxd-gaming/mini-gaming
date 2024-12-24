@@ -1,6 +1,6 @@
 socket:
   debugLogger: false
-  printLogger: false
+  printLogger: true
   client-work-size: 2 #netty client work 线程数量
   bossThreadSize: 2 #线程池的线程数量，共享
   workerThreadSize: 10 #线程池的线程数量，共享

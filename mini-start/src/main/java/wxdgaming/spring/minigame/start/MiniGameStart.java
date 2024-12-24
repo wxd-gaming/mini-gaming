@@ -11,8 +11,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import wxdgaming.spring.boot.core.CoreScan;
+import wxdgaming.spring.boot.core.ReflectContext;
 import wxdgaming.spring.boot.core.Throw;
-import wxdgaming.spring.boot.core.loader.JavaCoderCompile;
+import wxdgaming.spring.boot.loader.JavaCoderCompile;
 import wxdgaming.spring.boot.data.DataScan;
 import wxdgaming.spring.boot.data.batis.DataJdbcScan;
 import wxdgaming.spring.boot.data.batis.DruidSourceConfig;
@@ -80,12 +81,12 @@ public class MiniGameStart {
         try {
             SocketSession session = run.getBean(TcpSocketClient.class).idleSession();
             rpcDispatcher
-                    .request(session, 2, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .request(session, 2, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
                     .subscribe(str -> log.debug("2服 {}", str));
 
 
             rpcDispatcher
-                    .request(session, 1, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .request(session, 1, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
                     .subscribe(str -> log.debug("1服 {}", str));
 
             rpcDispatcher
@@ -94,7 +95,7 @@ public class MiniGameStart {
 
 
             rpcDispatcher
-                    .request(session, 30, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+                    .request(session, 30, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
                     .subscribe(str -> log.debug("30服 {}", str));
 
         } catch (Exception e) {
@@ -116,9 +117,6 @@ public class MiniGameStart {
                 "target/scripts"
         );
 
-        String[] array = Files.walk(Paths.get("F:\\log-libs"), 1)//.filter(v -> v.toString().endsWith(".jar"))
-                .map(p -> p.toString()).toArray(String[]::new);
-
         LogbackExtendLoader extendLoader = new LogbackExtendLoader(bootClassLoader);
         extendLoader.addURLs("mini-logic/src/main/resources");
         bootClassLoader.setExtendLoader(extendLoader);
@@ -132,6 +130,8 @@ public class MiniGameStart {
         DruidDataSource dataSource = copy.toDataSource();
         EntityManager entityManager = copy.entityManagerFactory(dataSource, Map.of());
         JdbcContext jdbcContext = new JdbcContext(dataSource, entityManager);
+
+        ReflectContext build = ReflectContext.Builder.of(bootClassLoader, "wxdgaming.spring.minigame.logic").build();
 
         Class<?> aClass = bootClassLoader.loadClass("wxdgaming.spring.minigame.logic.LogicServerMain");
 

@@ -51,7 +51,7 @@ public class MiniGameRpcDispatcher extends RpcDispatcher {
         } else {
             ILogicServerMain iLogicServerMain = dataCenter.getServerMap().get((int) targetId);
             if (iLogicServerMain == null) {
-                throw new RuntimeException("未知区服：" + targetId);
+                return buildResponse(10, "未知区服：" + targetId);
             }
             return iLogicServerMain.onReceiveRpc(session, rpcId, targetId, path, remoteParams);
         }

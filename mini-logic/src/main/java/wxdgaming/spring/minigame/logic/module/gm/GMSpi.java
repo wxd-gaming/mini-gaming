@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 import wxdgaming.spring.boot.core.InitPrint;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.boot.rpc.RPC;
@@ -16,13 +17,20 @@ import wxdgaming.spring.boot.rpc.RPC;
  **/
 @Slf4j
 @Service
+@RequestMapping("gm")
 public class GMSpi implements InitPrint {
 
     @Value("${sid:}")
     int sid;
 
-    @RPC("logic-rpc")
+    @RPC("/logic-rpc")
     public String logicRpc(SocketSession session, JSONObject jsonObject) {
+        log.info("logic-rpc 区服：{}", sid);
+        return "logic-rpc-ok";
+    }
+
+    @RPC()
+    public String kickRole(SocketSession session, JSONObject jsonObject) {
         log.info("logic-rpc 区服：{}", sid);
         return "logic-rpc-ok";
     }

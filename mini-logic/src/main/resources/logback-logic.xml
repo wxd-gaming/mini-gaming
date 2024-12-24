@@ -3,12 +3,10 @@
     <!--关闭自身日志-->
     <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
     <property name="LOG_PATH" value="target/logs"/>
-    <!--    <property name="LOG_PATTERN" value="%red([%d{MM-dd HH:mm:ss:SSS}]) %green([%thread]) %highlight([%-5level]) %boldMagenta([%C{0}#%M:%-3L]) - %msg%n"/>-->
-<!--    <property name="LOG_PATTERN"-->
-<!--              value="%red([%d{MM-dd HH:mm:ss:SSS}]) %green([%thread]) %highlight([%-5level]) %boldMagenta([%logger#%M:%-3L]) - %msg%n"/>-->
-
     <property name="LOG_PATTERN"
-              value="[%d{MM-dd HH:mm:ss:SSS}][%thread][%-5level][%logger#%M:%-3L] - %msg%n"/>
+              value="[%d{MM-dd HH:mm:ss:SSS}][%thread][%-5level][%logger{0}#%M:%-3L] - %msg%n"/>
+    <property name="CONSOLE_PATTERN"
+              value="%red([%d{MM-dd HH:mm:ss:SSS}]) %green([%thread]) %highlight([%-5level]) %boldMagenta([%logger#%M:%-3L]) - %msg%n"/>
 
     <!-- 日志记录器，日期滚动记录 -->
     <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -29,7 +27,7 @@
         </filter>
         <!-- 日志记录器的滚动策略，按日期记录 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/logback/${sid}/error-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/${sid}/logback/error-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>20</maxHistory>
         </rollingPolicy>
     </appender>
@@ -47,7 +45,7 @@
         </encoder>
         <!--  这个狗东西必须放后面 否则不生效-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/logback/${sid}/app-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/${sid}/logback/app-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>20</maxHistory>
         </rollingPolicy>
     </appender>
@@ -55,7 +53,7 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <!--encoder 默认配置为PatternLayoutEncoder-->
         <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
+            <pattern>${CONSOLE_PATTERN}</pattern>
         </encoder>
     </appender>
 
