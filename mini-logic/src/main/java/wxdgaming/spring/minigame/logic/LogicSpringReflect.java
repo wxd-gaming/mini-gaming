@@ -1,6 +1,6 @@
 package wxdgaming.spring.minigame.logic;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.SpringReflect;
 
 /**
@@ -9,7 +9,7 @@ import wxdgaming.spring.boot.core.SpringReflect;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-19 21:17
  **/
-@Service
+@Component
 public class LogicSpringReflect extends SpringReflect {
 
     public LogicSpringReflect() {

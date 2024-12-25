@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import wxdgaming.spring.boot.data.EntityBase;
+import wxdgaming.spring.minigame.bean.cache.DbCacheService;
 
 /**
  * 角色
@@ -18,5 +19,13 @@ public class Player extends EntityBase<Long> {
 
     private String openId;
     private String nickName;
+
+    public PlayerSummary playerSummary() {
+        return DbCacheService.getIns().find(PlayerSummary.class, getUid());
+    }
+
+    public MailPack mailPack() {
+        return DbCacheService.getIns().find(MailPack.class, getUid());
+    }
 
 }

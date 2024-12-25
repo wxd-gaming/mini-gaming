@@ -1,10 +1,9 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.net.server.ServerMessageDispatcher;
-import wxdgaming.spring.boot.rpc.RpcService;
 import wxdgaming.spring.minigame.logic.LogicScan;
 import wxdgaming.spring.minigame.logic.LogicSpringReflect;
 
@@ -14,16 +13,16 @@ import wxdgaming.spring.minigame.logic.LogicSpringReflect;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-16 16:33
  **/
-@Service
-public class DispatchService extends ServerMessageDispatcher {
+@Component
+public class LogicDispatcher extends ServerMessageDispatcher {
 
-    public DispatchService() {
+    public LogicDispatcher() {
         super(new String[]{LogicScan.class.getPackageName()});
     }
 
     @LogicStart
     @Order(5000)
-    public void init(LogicSpringReflect context, RpcService rpcService) {
+    public void init(LogicSpringReflect context) {
         super.initMapping(context.content());
     }
 

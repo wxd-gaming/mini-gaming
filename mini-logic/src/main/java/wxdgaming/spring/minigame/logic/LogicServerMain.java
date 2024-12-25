@@ -16,6 +16,7 @@ import wxdgaming.spring.boot.loader.ExtendLoader;
 import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
+import wxdgaming.spring.minigame.bean.cache.DbCacheService;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
 import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
@@ -93,6 +94,14 @@ public class LogicServerMain implements ILogicServerMain {
         player.setOpenId("test");
         player.setNickName("test");
         jdbcContext.save(player);
+
+        Player tmp = childContext.getBean(DbCacheService.class).find(Player.class, player.getUid());
+        System.out.println(tmp);
+
+        jdbcContext.delete(Player.class, player.getUid());
+        jdbcContext.delete(player);
+        jdbcContext.delete(player);
+
     }
 
     @Override

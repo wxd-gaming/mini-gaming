@@ -1,7 +1,7 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.ann.LogicStart;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.boot.rpc.RpcDispatcher;
@@ -14,7 +14,7 @@ import wxdgaming.spring.minigame.logic.LogicSpringReflect;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-16 16:33
  **/
-@Service
+@Component
 public class LogicRpcDispatcher extends RpcDispatcher {
 
     public LogicRpcDispatcher() {

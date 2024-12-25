@@ -8,7 +8,7 @@ import wxdgaming.spring.boot.core.format.HexId;
 import wxdgaming.spring.boot.data.MyTestEntity;
 import wxdgaming.spring.boot.data.batis.DruidSourceConfig;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
-import wxdgaming.spring.minigame.bean.entity.EntityScan;
+import wxdgaming.spring.minigame.bean.EntityBeanScan;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class H2Test {
         dataSourceConfig.setUsername("root");
         dataSourceConfig.setPassword("test");
         dataSourceConfig.setDriverClassName("org.h2.Driver");
-        dataSourceConfig.setPackageNames(new String[]{EntityScan.class.getPackageName()});
+        dataSourceConfig.setPackageNames(new String[]{EntityBeanScan.class.getPackageName()});
         dataSourceConfig.setBatchInsert(true);
         dataSourceConfig.setDialect(org.hibernate.dialect.H2Dialect.class.getName());
 
@@ -51,7 +51,7 @@ public class H2Test {
     @Test
     public void clearTable() {
         long start = System.nanoTime();
-        int deleteFromMyTestEntity = jdbcContext.nativeQuery("delete from MY_TEST_ENTITY");
+        int deleteFromMyTestEntity = jdbcContext.executeUpdate("delete from MY_TEST_ENTITY");
         System.out.println(deleteFromMyTestEntity + ", " + (((System.nanoTime() - start) / 10000 / 100f) + " ms"));
     }
 
