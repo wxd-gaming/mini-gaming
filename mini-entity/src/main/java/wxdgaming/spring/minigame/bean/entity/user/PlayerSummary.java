@@ -15,5 +15,11 @@ import wxdgaming.spring.boot.data.EntityBase;
 @Setter
 @Entity
 public class PlayerSummary extends EntityBase<Long> {
+
     private String openId;
+
+    // public EventQueue eventQueue() {
+    //     return QueueEventService.getUserEventQueue(getUid());
+    // }
+
 }

@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import wxdgaming.spring.minigame.bean.EntityBeanScan;
+import wxdgaming.spring.minigame.bean.MiniGameBeanScan;
 
 /**
  * 扫描类
@@ -16,7 +16,7 @@ import wxdgaming.spring.minigame.bean.EntityBeanScan;
 @EnableAsync
 @EnableScheduling
 @ComponentScan(basePackageClasses = {
-        EntityBeanScan.class,
+        MiniGameBeanScan.class,
         LogicScan.class,
 })
 public class LogicScan {

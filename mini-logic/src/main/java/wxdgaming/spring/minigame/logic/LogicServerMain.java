@@ -3,6 +3,8 @@ package wxdgaming.spring.minigame.logic;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import com.alibaba.druid.pool.DruidDataSource;
+import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -10,18 +12,21 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.PropertySource;
 import wxdgaming.spring.boot.core.ann.LogicStart;
+import wxdgaming.spring.boot.data.batis.DruidSourceConfig;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
+import wxdgaming.spring.boot.data.batis.JdbcHelper;
 import wxdgaming.spring.boot.loader.BootClassLoader;
 import wxdgaming.spring.boot.loader.ExtendLoader;
 import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
-import wxdgaming.spring.minigame.bean.entity.user.Player;
+import wxdgaming.spring.minigame.bean.MiniGameBeanScan;
 import wxdgaming.spring.minigame.bean.cache.DbCacheService;
-import wxdgaming.spring.minigame.logic.module.data.DataCenter;
+import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * 逻辑服务主入口
@@ -33,7 +38,6 @@ import java.io.InputStream;
 public class LogicServerMain implements ILogicServerMain {
 
     int sid;
-    JdbcContext jdbcContext = null;
     AnnotationConfigApplicationContext childContext = null;
 
     public static void resetLogback(ClassLoader classLoader, String logbackXml, String key, String value) {
@@ -54,15 +58,14 @@ public class LogicServerMain implements ILogicServerMain {
 
     @Override public void init(ConfigurableApplicationContext parent, BootClassLoader classLoader, ExtendLoader extendLoader, JdbcContext jdbcContext, int sid) {
         // System.setProperty("sid", String.valueOf(sid));
+
         LogbackExtendLoader.resetLogback(extendLoader, "logback-logic.xml", "sid", String.valueOf(sid));
         this.sid = sid;
-        this.jdbcContext = jdbcContext;
 
         childContext = new AnnotationConfigApplicationContext();
         // 创建子容器
         childContext.setParent(parent);
         childContext.getEnvironment().merge(parent.getEnvironment());
-        // childContext.setEnvironment(parent.getEnvironment());
         childContext.getEnvironment().getPropertySources().addLast(new PropertySource<Integer>("sid", sid) {
             @Override public Object getProperty(String name) {
                 if (this.getName().equals(name)) return sid;
@@ -84,19 +87,19 @@ public class LogicServerMain implements ILogicServerMain {
         childContext.register(LogicScan.class);
         // 刷新子容器以完成初始化
         childContext.refresh();
-
         childContext.getBean(LogicSpringReflect.class).content().executorMethod(LogicStart.class);
 
-        DataCenter bean = childContext.getBean(DataCenter.class);
-        bean.setJdbcContext(jdbcContext);
+        DbCacheService dbCacheService = childContext.getBean(DbCacheService.class);
+
         Player player = new Player();
         player.setUid(System.nanoTime());
         player.setOpenId("test");
         player.setNickName("test");
-        jdbcContext.save(player);
+        dbCacheService.put(player);
 
-        Player tmp = childContext.getBean(DbCacheService.class).find(Player.class, player.getUid());
+        Player tmp = dbCacheService.find(Player.class, player.getUid());
         System.out.println(tmp);
+
 
         jdbcContext.delete(Player.class, player.getUid());
         jdbcContext.delete(player);

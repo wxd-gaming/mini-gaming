@@ -4,7 +4,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.loader.BootClassLoader;
 import wxdgaming.spring.boot.loader.ExtendLoader;
-import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
 
 /**

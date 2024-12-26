@@ -6,14 +6,11 @@ import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import wxdgaming.spring.boot.core.CoreScan;
-import wxdgaming.spring.boot.core.ReflectContext;
 import wxdgaming.spring.boot.core.Throw;
-import wxdgaming.spring.boot.loader.JavaCoderCompile;
 import wxdgaming.spring.boot.data.DataScan;
 import wxdgaming.spring.boot.data.batis.DataJdbcScan;
 import wxdgaming.spring.boot.data.batis.DruidSourceConfig;
@@ -21,6 +18,7 @@ import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.data.batis.JdbcHelper;
 import wxdgaming.spring.boot.data.redis.DataRedisScan;
 import wxdgaming.spring.boot.loader.BootClassLoader;
+import wxdgaming.spring.boot.loader.JavaCoderCompile;
 import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.NetScan;
 import wxdgaming.spring.boot.net.SocketSession;
@@ -29,13 +27,11 @@ import wxdgaming.spring.boot.rpc.RpcDispatcher;
 import wxdgaming.spring.boot.rpc.RpcScan;
 import wxdgaming.spring.boot.web.WebScan;
 import wxdgaming.spring.boot.webclient.WebClientScan;
-import wxdgaming.spring.minigame.bean.entity.user.Player;
+import wxdgaming.spring.minigame.bean.MiniGameBeanScan;
 import wxdgaming.spring.minigame.start.module.data.DataCenter;
 import wxdgaming.spring.minigame.start.module.rpc.MiniGameRpcDispatcher;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -94,9 +90,9 @@ public class MiniGameStart {
                     .subscribe(str -> log.debug("3服 {}", str));
 
 
-            rpcDispatcher
-                    .request(session, 30, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("30服 {}", str));
+            // rpcDispatcher
+            //         .request(session, 30, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
+            //         .subscribe(str -> log.debug("30服 {}", str));
 
         } catch (Exception e) {
             log.error("{}", Throw.ofString(e, false));
@@ -107,10 +103,12 @@ public class MiniGameStart {
         return new ArrayList<>(List.of(System.getProperty("java.class.path").split(File.pathSeparator)));
     }
 
-    public static void loadServer(ConfigurableApplicationContext run, DataCenter dataCenter, int sid) throws Exception {
-        new JavaCoderCompile()
-                .parentClassLoader(MiniGameStart.class.getClassLoader())
-                .compilerJava("mini-logic/src/main/java")
+    public static void loadServer(ConfigurableApplicationContext parent, DataCenter dataCenter, int sid) throws Exception {
+
+        JavaCoderCompile javaCoderCompile = new JavaCoderCompile()
+                .parentClassLoader(MiniGameStart.class.getClassLoader());
+        //
+        javaCoderCompile.compilerJava("mini-logic/src/main/java")
                 .outPutFile("target/scripts", true);
 
         BootClassLoader bootClassLoader = new BootClassLoader(MiniGameStart.class.getClassLoader(),
@@ -118,25 +116,26 @@ public class MiniGameStart {
         );
 
         LogbackExtendLoader extendLoader = new LogbackExtendLoader(bootClassLoader);
-        extendLoader.addURLs("mini-logic/src/main/resources");
+        extendLoader.addURLs(
+                "mini-logic/src/main/resources"
+        );
+        // extendLoader.addExtendPackages("wxdgaming.spring.minigame.bean");
         bootClassLoader.setExtendLoader(extendLoader);
 
-        JdbcHelper jdbcHelper = run.getBean(JdbcHelper.class);
+        JdbcHelper jdbcHelper = parent.getBean(JdbcHelper.class);
         DruidSourceConfig copy = jdbcHelper.getDb().copy("s" + sid);
         copy.setShowSql(true);
-        // copy.setDialect(org.hibernate.dialect.H2Dialect.class.getName());
-        copy.setPackageNames(new String[]{EntityScan.class.getPackageName(), Player.class.getPackageName()});
+        copy.setPackageNames(new String[]{MiniGameBeanScan.class.getPackageName()});
         copy.createDatabase();
         DruidDataSource dataSource = copy.toDataSource();
         EntityManager entityManager = copy.entityManagerFactory(dataSource, Map.of());
         JdbcContext jdbcContext = new JdbcContext(dataSource, entityManager);
 
-        ReflectContext build = ReflectContext.Builder.of(bootClassLoader, "wxdgaming.spring.minigame.logic").build();
 
         Class<?> aClass = bootClassLoader.loadClass("wxdgaming.spring.minigame.logic.LogicServerMain");
 
         ILogicServerMain iLogicServerMain = (ILogicServerMain) aClass.getDeclaredConstructor().newInstance();
-        iLogicServerMain.init(run, bootClassLoader, extendLoader, jdbcContext, sid);
+        iLogicServerMain.init(parent, bootClassLoader, extendLoader, jdbcContext, sid);
 
         dataCenter.getServerMap().put(sid, iLogicServerMain);
 

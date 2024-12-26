@@ -7,6 +7,7 @@ import wxdgaming.spring.boot.core.InitPrint;
 import wxdgaming.spring.boot.data.EntityUID;
 import wxdgaming.spring.boot.data.batis.JdbcCache;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
+import wxdgaming.spring.minigame.bean.entity.global.GlobalBase;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,6 +24,8 @@ public class DbCacheService implements InitPrint {
 
     private final ConcurrentHashMap<Class<? extends EntityUID<?>>, JdbcCache<?, ?>> cache = new ConcurrentHashMap<>();
 
+    private final ConcurrentHashMap<Long, GlobalBase> globalDataMap = new ConcurrentHashMap<>();
+
     JdbcContext jdbcContext;
 
     @Autowired
@@ -37,6 +40,10 @@ public class DbCacheService implements InitPrint {
 
     public <K, V extends EntityUID<K>> V find(Class<V> clazz, K uid) {
         return get(clazz).get(uid);
+    }
+
+    public <K, V extends EntityUID<K>> void put(V v) {
+        get(v.getClass()).put(v.getUid(), v);
     }
 
 }

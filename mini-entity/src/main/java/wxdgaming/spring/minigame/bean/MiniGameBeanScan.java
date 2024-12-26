@@ -9,5 +9,5 @@ import org.springframework.context.annotation.ComponentScan;
  * @version: 2024-12-17 20:44
  **/
 @ComponentScan
-public class EntityBeanScan {
+public class MiniGameBeanScan {
 }
