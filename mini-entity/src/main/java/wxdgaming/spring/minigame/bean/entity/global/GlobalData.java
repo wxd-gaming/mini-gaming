@@ -23,7 +23,7 @@ public class GlobalData extends EntityBase<Long> {
     private int sid;
     private boolean merge;
     private boolean mergeTime;
-    @Column(columnDefinition = "json")
+    @Column(columnDefinition = "longtext")
     @Convert(converter = ObjectToJsonStringConverter.class)
     private GlobalBase data;
 

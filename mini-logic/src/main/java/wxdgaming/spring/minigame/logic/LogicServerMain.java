@@ -3,30 +3,27 @@ package wxdgaming.spring.minigame.logic;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import com.alibaba.druid.pool.DruidDataSource;
-import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.PropertySource;
+import wxdgaming.spring.boot.core.SpringReflectContent;
 import wxdgaming.spring.boot.core.ann.LogicStart;
-import wxdgaming.spring.boot.data.batis.DruidSourceConfig;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
-import wxdgaming.spring.boot.data.batis.JdbcHelper;
 import wxdgaming.spring.boot.loader.BootClassLoader;
 import wxdgaming.spring.boot.loader.ExtendLoader;
 import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
-import wxdgaming.spring.minigame.bean.MiniGameBeanScan;
-import wxdgaming.spring.minigame.bean.cache.DbCacheService;
+import wxdgaming.spring.boot.rpc.RpcService;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
+import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
+import wxdgaming.spring.minigame.logic.module.cache.QueueEventService;
 import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 
 import java.io.InputStream;
-import java.util.Map;
 
 /**
  * 逻辑服务主入口
@@ -66,11 +63,13 @@ public class LogicServerMain implements ILogicServerMain {
         // 创建子容器
         childContext.setParent(parent);
         childContext.getEnvironment().merge(parent.getEnvironment());
+
         childContext.getEnvironment().getPropertySources().addLast(new PropertySource<Integer>("sid", sid) {
             @Override public Object getProperty(String name) {
                 if (this.getName().equals(name)) return sid;
                 return null;
             }
+
         });
         childContext.setApplicationStartup(parent.getApplicationStartup());
         childContext.setClassLoader(classLoader);
@@ -82,12 +81,15 @@ public class LogicServerMain implements ILogicServerMain {
             BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(JdbcContext.class, () -> jdbcContext);
             childContext.registerBeanDefinition("jdbcContext", beanDefinitionBuilder.getRawBeanDefinition());
         }
-
+        childContext.setId("s-" + String.valueOf(sid));
+        childContext.setDisplayName("s-" + String.valueOf(sid));
         // 设置扫描类
         childContext.register(LogicScan.class);
         // 刷新子容器以完成初始化
         childContext.refresh();
-        childContext.getBean(LogicSpringReflect.class).content().executorMethod(LogicStart.class);
+        LogicSpringReflect logicSpringReflect = childContext.getBean(LogicSpringReflect.class);
+        SpringReflectContent springReflectContent = logicSpringReflect.content();
+        springReflectContent.executorMethod(LogicStart.class);
 
         DbCacheService dbCacheService = childContext.getBean(DbCacheService.class);
 
@@ -123,7 +125,24 @@ public class LogicServerMain implements ILogicServerMain {
     }
 
     @Override public Object onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
-        return childContext.getBean(LogicRpcDispatcher.class).rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
+        QueueEventService contextBean = childContext.getBean(QueueEventService.class);
+        LogicRpcDispatcher logicRpcDispatcher = childContext.getBean(LogicRpcDispatcher.class);
+        contextBean.getGlobalEventQueue().submit(() -> {
+            try {
+                return logicRpcDispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).whenComplete((ret, throwable) -> {
+            logicRpcDispatcher.response(
+                    session,
+                    rpcId,
+                    targetId,
+                    throwable == null ? 1 : 99,
+                    throwable == null ? String.valueOf(ret) : throwable.getMessage()
+            );
+        });
+        return RpcService.IGNORE;
     }
 
     @Override

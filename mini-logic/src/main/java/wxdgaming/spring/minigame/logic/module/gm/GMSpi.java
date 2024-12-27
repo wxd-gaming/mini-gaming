@@ -20,18 +20,21 @@ import wxdgaming.spring.boot.rpc.RPC;
 @RequestMapping("gm")
 public class GMSpi implements InitPrint {
 
-    @Value("${sid:}")
     int sid;
+
+    public GMSpi(@Value("${sid}") int sid) {
+        this.sid = sid;
+    }
 
     @RPC("/logic-rpc")
     public String logicRpc(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc 区服：{}", sid);
+        log.info("logic-rpc 区服：{} {}", sid, jsonObject.toString());
         return "logic-rpc-ok";
     }
 
     @RPC()
     public String kickRole(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc 区服：{}", sid);
+        log.info("logic-rpc 区服：{} {}", sid, jsonObject.toString());
         return "logic-rpc-ok";
     }
 

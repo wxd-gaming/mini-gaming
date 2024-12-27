@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class QueueEventService implements InitPrint {
 
     private final ConcurrentHashMap<Integer, EventQueue> userQueueEventMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Integer, EventQueue> globalQueueEventMap = new ConcurrentHashMap<>();
+    private EventQueue globalQueueEvent;
 
     @LogicStart
     public void onStart(LogicExecutor logicExecutor) {
@@ -28,10 +28,7 @@ public class QueueEventService implements InitPrint {
             userQueueEventMap.put(i, eventQueue);
         }
 
-        for (int i = 1; i <= 10; i++) {
-            EventQueue eventQueue = new EventQueue("q" + i, logicExecutor);
-            globalQueueEventMap.put(i, eventQueue);
-        }
+        globalQueueEvent = new EventQueue("global", logicExecutor);
     }
 
     public EventQueue getUserEventQueue(long uid) {
@@ -42,12 +39,8 @@ public class QueueEventService implements InitPrint {
         return userQueueEventMap.get(id);
     }
 
-    public EventQueue getGlobalEventQueue(long uid) {
-        return getGlobalEventQueue((int) ((uid % 10) + 1));
-    }
-
-    public EventQueue getGlobalEventQueue(int id) {
-        return globalQueueEventMap.get(id);
+    public EventQueue getGlobalEventQueue() {
+        return globalQueueEvent;
     }
 
 }

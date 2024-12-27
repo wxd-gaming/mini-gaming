@@ -76,18 +76,21 @@ public class MiniGameStart {
         RpcDispatcher rpcDispatcher = run.getBean(MiniGameRpcDispatcher.class);
         try {
             SocketSession session = run.getBean(TcpSocketClient.class).idleSession();
-            rpcDispatcher
-                    .request(session, 2, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("2服 {}", str));
+            for (int i = 0; i <= 3; i++) {
+
+                rpcDispatcher
+                        .request(session, 2, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())
+                        .subscribe(str -> log.debug("2服 {}", str));
 
 
-            rpcDispatcher
-                    .request(session, 1, "gm/logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("1服 {}", str));
+                rpcDispatcher
+                        .request(session, 1, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())
+                        .subscribe(str -> log.debug("1服 {}", str));
 
-            rpcDispatcher
-                    .request(session, 3, "logic-rpc", new JSONObject().fluentPut("type", 1).toString())
-                    .subscribe(str -> log.debug("3服 {}", str));
+                rpcDispatcher
+                        .request(session, 3, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())
+                        .subscribe(str -> log.debug("3服 {}", str));
+            }
 
 
             // rpcDispatcher
