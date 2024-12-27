@@ -1,6 +1,5 @@
 package wxdgaming.spring.minigame.logic.module.cache;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import wxdgaming.spring.boot.core.InitPrint;
 import wxdgaming.spring.boot.core.ann.LogicStart;
@@ -18,13 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class QueueEventService implements InitPrint {
 
-    private static final ConcurrentHashMap<Integer, EventQueue> userQueueEventMap = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Integer, EventQueue> globalQueueEventMap = new ConcurrentHashMap<>();
-
-    @PostConstruct
-    @Override public void __initPrint() {
-        InitPrint.super.__initPrint();
-    }
+    private final ConcurrentHashMap<Integer, EventQueue> userQueueEventMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, EventQueue> globalQueueEventMap = new ConcurrentHashMap<>();
 
     @LogicStart
     public void onStart(LogicExecutor logicExecutor) {
@@ -40,19 +34,19 @@ public class QueueEventService implements InitPrint {
         }
     }
 
-    public static EventQueue getUserEventQueue(long uid) {
+    public EventQueue getUserEventQueue(long uid) {
         return getUserEventQueue((int) ((uid % 10) + 1));
     }
 
-    public static EventQueue getUserEventQueue(int id) {
+    public EventQueue getUserEventQueue(int id) {
         return userQueueEventMap.get(id);
     }
 
-    public static EventQueue getGlobalEventQueue(long uid) {
+    public EventQueue getGlobalEventQueue(long uid) {
         return getGlobalEventQueue((int) ((uid % 10) + 1));
     }
 
-    public static EventQueue getGlobalEventQueue(int id) {
+    public EventQueue getGlobalEventQueue(int id) {
         return globalQueueEventMap.get(id);
     }
 

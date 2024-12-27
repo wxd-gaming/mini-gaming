@@ -1,6 +1,5 @@
 package wxdgaming.spring.minigame.bean.cache;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.InitPrint;
@@ -20,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DbCacheService implements InitPrint {
 
-    @Getter static DbCacheService ins = null;
 
     private final ConcurrentHashMap<Class<? extends EntityUID<?>>, JdbcCache<?, ?>> cache = new ConcurrentHashMap<>();
 
@@ -31,7 +29,6 @@ public class DbCacheService implements InitPrint {
     @Autowired
     public DbCacheService(JdbcContext jdbcContext) {
         this.jdbcContext = jdbcContext;
-        DbCacheService.ins = this;
     }
 
     public <K, V extends EntityUID<K>> JdbcCache<K, V> get(Class<V> clazz) {

@@ -6,5 +6,8 @@ package wxdgaming.spring.minigame.bean.entity.global;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-16 16:08
  **/
-public class GlobalBase {
+public abstract class GlobalBase {
+
+    public abstract int getType();
+
 }

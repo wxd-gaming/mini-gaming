@@ -1,9 +1,12 @@
 package wxdgaming.spring.minigame.bean.entity.global;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import wxdgaming.spring.boot.data.EntityBase;
+import wxdgaming.spring.boot.data.converter.ObjectToJsonStringConverter;
 
 /**
  * 全局数据
@@ -15,7 +18,13 @@ import wxdgaming.spring.boot.data.EntityBase;
 @Setter
 @Entity
 public class GlobalData extends EntityBase<Long> {
+
     private int type;
     private int sid;
-    private byte[] data;
+    private boolean merge;
+    private boolean mergeTime;
+    @Column(columnDefinition = "json")
+    @Convert(converter = ObjectToJsonStringConverter.class)
+    private GlobalBase data;
+
 }
