@@ -8,11 +8,12 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
   db:
-    url: jdbc:h2:file:./target/database/test
-    username: root
-    password: test
-    driver-class-name: org.h2.Driver
-    show-sql: false
-    ddl-auto: "update"
+    config:
+      url: jdbc:h2:file:./target/database/test
+      username: root
+      password: test
+      driver-class-name: org.h2.Driver
+      show-sql: false
+      ddl-auto: "update"
 
 
