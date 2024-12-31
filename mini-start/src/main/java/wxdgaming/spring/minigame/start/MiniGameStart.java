@@ -126,12 +126,12 @@ public class MiniGameStart {
         bootClassLoader.setExtendLoader(extendLoader);
 
         JdbcHelper jdbcHelper = parent.getBean(JdbcHelper.class);
-        DruidSourceConfig copy = jdbcHelper.getDb().copy("s" + sid);
+        DruidSourceConfig copy = jdbcHelper.getConfig().copy("s" + sid);
         copy.setShowSql(true);
         copy.setPackageNames(new String[]{MiniGameBeanScan.class.getPackageName()});
         copy.createDatabase();
         DruidDataSource dataSource = copy.toDataSource();
-        EntityManager entityManager = copy.entityManagerFactory(dataSource, Map.of());
+        EntityManager entityManager = copy.entityManager(dataSource, Map.of());
         JdbcContext jdbcContext = new JdbcContext(dataSource, entityManager);
 
 
