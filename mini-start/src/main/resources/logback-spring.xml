@@ -63,6 +63,8 @@
     <logger name="reactor.util" level="INFO" additivity="true"/>
     <logger name="org.hibernate" level="INFO" additivity="true"/>
     <logger name="org.springframework" level="info" additivity="true"/>
+    <logger name="org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager" level="info"
+            additivity="true"/>
     <!--    <logger name="_org.springframework" level="info" additivity="true"/>-->
 
     <!-- 生产环境下，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->

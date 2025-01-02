@@ -1,5 +1,6 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.ann.LogicStart;
@@ -16,8 +17,8 @@ import wxdgaming.spring.minigame.logic.LogicSpringReflect;
 @Component
 public class LogicDispatcher extends ServerMessageDispatcher {
 
-    public LogicDispatcher() {
-        super(new String[]{LogicScan.class.getPackageName()});
+    public LogicDispatcher(@Value("${socket.printLogger:false}") boolean printLogger) {
+        super(printLogger, new String[]{LogicScan.class.getPackageName()});
     }
 
     @LogicStart
