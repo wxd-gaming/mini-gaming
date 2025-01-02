@@ -22,7 +22,7 @@ public interface ILogicServerMain {
 
     void onReceive(SocketSession session);
 
-    Object onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception;
+    void onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams);
 
     void setCfg();
 

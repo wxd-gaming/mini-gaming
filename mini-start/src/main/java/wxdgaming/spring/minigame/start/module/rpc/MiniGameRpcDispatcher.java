@@ -23,9 +23,10 @@ public class MiniGameRpcDispatcher extends RpcDispatcher {
 
     final DataCenter dataCenter;
 
-    public MiniGameRpcDispatcher(@Value("${socket.rpc-token:getg6jhkopw435dvmkmcvx5y63-40}")
-                                 String RPC_TOKEN, DataCenter dataCenter) {
-        super(RPC_TOKEN);
+    public MiniGameRpcDispatcher(
+            @Value("${socket.printLogger:false}") boolean printLogger,
+            @Value("${socket.rpc-token:getg6jhkopw435dvmkmcvx5y63-40}") String RPC_TOKEN, DataCenter dataCenter) {
+        super(printLogger, RPC_TOKEN);
         this.dataCenter = dataCenter;
     }
 
@@ -43,7 +44,7 @@ public class MiniGameRpcDispatcher extends RpcDispatcher {
     }
 
 
-    @Override public Object rpcReqSocketAction(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
+    @Override public void rpcReqSocketAction(SocketSession session, long rpcId, long targetId, String path, String remoteParams) {
         if (targetId == 0) {
             for (ILogicServerMain logicServerMain : dataCenter.getServerMap().values()) {
                 logicServerMain.onReceiveRpc(session, rpcId, targetId, path, remoteParams);
@@ -51,11 +52,10 @@ public class MiniGameRpcDispatcher extends RpcDispatcher {
         } else {
             ILogicServerMain iLogicServerMain = dataCenter.getServerMap().get((int) targetId);
             if (iLogicServerMain == null) {
-                return buildResponse(10, "未知区服：" + targetId);
+                response(session, rpcId, targetId, 10, "未知区服：" + targetId);
             }
-            return iLogicServerMain.onReceiveRpc(session, rpcId, targetId, path, remoteParams);
+            iLogicServerMain.onReceiveRpc(session, rpcId, targetId, path, remoteParams);
         }
-        return null;
     }
 
 }

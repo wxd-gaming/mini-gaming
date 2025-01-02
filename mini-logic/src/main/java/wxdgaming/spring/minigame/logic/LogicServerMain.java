@@ -16,11 +16,9 @@ import wxdgaming.spring.boot.loader.BootClassLoader;
 import wxdgaming.spring.boot.loader.ExtendLoader;
 import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
-import wxdgaming.spring.boot.rpc.RpcService;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
-import wxdgaming.spring.minigame.logic.module.cache.QueueEventService;
-import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
+import wxdgaming.spring.minigame.logic.module.dispatch.MiniGameLogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 
 import java.io.InputStream;
@@ -124,25 +122,9 @@ public class LogicServerMain implements ILogicServerMain {
 
     }
 
-    @Override public Object onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
-        QueueEventService contextBean = childContext.getBean(QueueEventService.class);
-        LogicRpcDispatcher logicRpcDispatcher = childContext.getBean(LogicRpcDispatcher.class);
-        contextBean.getGlobalEventQueue().submit(() -> {
-            try {
-                return logicRpcDispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).whenComplete((ret, throwable) -> {
-            logicRpcDispatcher.response(
-                    session,
-                    rpcId,
-                    targetId,
-                    throwable == null ? 1 : 99,
-                    throwable == null ? String.valueOf(ret) : throwable.getMessage()
-            );
-        });
-        return RpcService.IGNORE;
+    @Override public void onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) {
+        MiniGameLogicRpcDispatcher miniGameLogicRpcDispatcher = childContext.getBean(MiniGameLogicRpcDispatcher.class);
+        miniGameLogicRpcDispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.ann.LogicStart;
@@ -15,10 +16,12 @@ import wxdgaming.spring.minigame.logic.LogicSpringReflect;
  * @version: 2024-12-16 16:33
  **/
 @Component
-public class LogicRpcDispatcher extends RpcDispatcher {
+public class MiniGameLogicRpcDispatcher extends RpcDispatcher {
 
-    public LogicRpcDispatcher() {
-        super("s", new String[]{LogicScan.class.getPackageName()});
+    public MiniGameLogicRpcDispatcher(
+            @Value("${socket.printLogger:false}") boolean printLogger,
+            @Value("${socket.rpc-token:getg6jhkopw435dvmkmcvx5y63-40}") String RPC_TOKEN) {
+        super(printLogger, RPC_TOKEN, new String[]{LogicScan.class.getPackageName()});
     }
 
     @LogicStart
@@ -27,7 +30,7 @@ public class LogicRpcDispatcher extends RpcDispatcher {
         super.initMapping(context.content());
     }
 
-    @Override public Object rpcReqSocketAction(SocketSession session, long rpcId, long targetId, String path, String remoteParams) throws Exception {
-        return super.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
+    @Override public void rpcReqSocketAction(SocketSession session, long rpcId, long targetId, String path, String remoteParams) {
+        super.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
     }
 }

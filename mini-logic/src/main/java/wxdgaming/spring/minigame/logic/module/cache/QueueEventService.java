@@ -1,5 +1,6 @@
 package wxdgaming.spring.minigame.logic.module.cache;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import wxdgaming.spring.boot.core.InitPrint;
 import wxdgaming.spring.boot.core.ann.LogicStart;
@@ -21,14 +22,14 @@ public class QueueEventService implements InitPrint {
     private EventQueue globalQueueEvent;
 
     @LogicStart
-    public void onStart(LogicExecutor logicExecutor) {
+    public void onStart(@Value("${sid}") int sid, LogicExecutor logicExecutor) {
         System.out.println("QueueEventService init " + QueueEventService.class.hashCode());
         for (int i = 1; i <= 10; i++) {
-            EventQueue eventQueue = new EventQueue("q" + i, logicExecutor);
+            EventQueue eventQueue = new EventQueue("q" + "-" + sid + "-" + i, logicExecutor);
             userQueueEventMap.put(i, eventQueue);
         }
 
-        globalQueueEvent = new EventQueue("global", logicExecutor);
+        globalQueueEvent = new EventQueue(sid + "-global", logicExecutor);
     }
 
     public EventQueue getUserEventQueue(long uid) {
