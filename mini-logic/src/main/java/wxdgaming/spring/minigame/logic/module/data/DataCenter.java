@@ -5,6 +5,9 @@ import lombok.Getter;
 import org.springframework.stereotype.Service;
 import wxdgaming.spring.boot.core.InitPrint;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
 /**
  * 区服数据
  *
@@ -15,5 +18,7 @@ import wxdgaming.spring.boot.core.InitPrint;
 @Service
 public class DataCenter implements InitPrint {
 
+    /** session id 和 player id 映射关系 */
+    private final ConcurrentSkipListMap<Long, Long> sessionId2PlayerIdMap = new ConcurrentSkipListMap<>();
 
 }

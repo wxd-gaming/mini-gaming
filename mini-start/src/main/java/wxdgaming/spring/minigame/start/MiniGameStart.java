@@ -79,13 +79,13 @@ public class MiniGameStart {
             for (int i = 0; i <= 3; i++) {
 
                 rpcDispatcher
+                        .request(session, 1, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())
+                        .subscribe(str -> log.debug("1服 {}", str));
+
+                rpcDispatcher
                         .request(session, 2, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())
                         .subscribe(str -> log.debug("2服 {}", str));
 
-
-                rpcDispatcher
-                        .request(session, 1, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())
-                        .subscribe(str -> log.debug("1服 {}", str));
 
                 rpcDispatcher
                         .request(session, 3, "gm/logic-rpc", new JSONObject().fluentPut("type", 1 + i).toString())

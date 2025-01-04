@@ -2,6 +2,7 @@ package wxdgaming.spring.minigame.start.module.rpc;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import wxdgaming.spring.boot.core.SpringReflectContent;
 import wxdgaming.spring.boot.core.ann.AppStart;
@@ -18,7 +19,7 @@ import wxdgaming.spring.minigame.start.module.data.DataCenter;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-20 21:15
  **/
-@Service
+@Component
 public class MiniGameRpcDispatcher extends RpcDispatcher {
 
     final DataCenter dataCenter;

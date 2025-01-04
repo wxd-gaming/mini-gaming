@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
-import wxdgaming.spring.boot.data.EntityBase;
+import wxdgaming.spring.minigame.bean.MapObject;
 
 /**
  * 角色
@@ -15,7 +15,8 @@ import wxdgaming.spring.boot.data.EntityBase;
 @Getter
 @Setter
 @Entity
-public class Player extends EntityBase<Long> {
+public class Player extends MapObject {
+
 
     private String openId;
     @Column()

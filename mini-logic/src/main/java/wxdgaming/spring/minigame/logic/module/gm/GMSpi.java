@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import wxdgaming.spring.boot.core.InitPrint;
+import wxdgaming.spring.boot.core.threading.ExecutorWith;
+import wxdgaming.spring.boot.core.threading.ThreadContext;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.boot.rpc.RPC;
 
@@ -27,14 +29,16 @@ public class GMSpi implements InitPrint {
     }
 
     @RPC("/logic-rpc")
+    @ExecutorWith(queueName = "gm")
     public String logicRpc(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc 区服：{} {}", sid, jsonObject.toString());
+        log.info("logic-rpc 区服：{} {} {}", sid, jsonObject.toString(), ThreadContext.queueName());
         return "logic-rpc-ok";
     }
 
     @RPC()
+    @ExecutorWith(queueName = "gm")
     public String kickRole(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc 区服：{} {}", sid, jsonObject.toString());
+        log.info("logic-rpc 区服：{} {} {}", sid, jsonObject.toString(), ThreadContext.queueName());
         return "logic-rpc-ok";
     }
 

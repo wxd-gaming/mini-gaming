@@ -18,7 +18,7 @@ import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
-import wxdgaming.spring.minigame.logic.module.dispatch.MiniGameLogicRpcDispatcher;
+import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 
 import java.io.InputStream;
@@ -123,8 +123,8 @@ public class LogicServerMain implements ILogicServerMain {
     }
 
     @Override public void onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) {
-        MiniGameLogicRpcDispatcher miniGameLogicRpcDispatcher = childContext.getBean(MiniGameLogicRpcDispatcher.class);
-        miniGameLogicRpcDispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
+        LogicRpcDispatcher logicRpcDispatcher = childContext.getBean(LogicRpcDispatcher.class);
+        logicRpcDispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
     }
 
     @Override
