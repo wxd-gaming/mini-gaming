@@ -1,9 +1,8 @@
-package wxdgaming.spring.minigame.start.module.rpc;
+package wxdgaming.spring.minigame.start.module.dispatcher;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import wxdgaming.spring.boot.core.SpringReflectContent;
 import wxdgaming.spring.boot.core.ann.AppStart;
 import wxdgaming.spring.boot.core.ann.ReLoad;

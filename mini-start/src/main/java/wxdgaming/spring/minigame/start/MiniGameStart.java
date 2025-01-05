@@ -29,7 +29,7 @@ import wxdgaming.spring.boot.web.WebScan;
 import wxdgaming.spring.boot.webclient.WebClientScan;
 import wxdgaming.spring.minigame.bean.MiniGameBeanScan;
 import wxdgaming.spring.minigame.start.module.data.DataCenter;
-import wxdgaming.spring.minigame.start.module.rpc.MiniGameRpcDispatcher;
+import wxdgaming.spring.minigame.start.module.dispatcher.MiniGameRpcDispatcher;
 
 import java.io.File;
 import java.util.ArrayList;

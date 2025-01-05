@@ -11,10 +11,12 @@
 
     <artifactId>mini-entity</artifactId>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>wxdgaming.spring.minigame</groupId>
+            <artifactId>mini-proto</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
 
 </project>

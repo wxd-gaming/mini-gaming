@@ -17,6 +17,7 @@ import wxdgaming.spring.minigame.logic.LogicScan;
 import wxdgaming.spring.minigame.logic.LogicSpringReflect;
 import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
+import wxdgaming.spring.minigame.proto.PojoScan;
 
 import java.util.concurrent.Executor;
 
@@ -30,12 +31,15 @@ import java.util.concurrent.Executor;
 @RequestMapping("/broker")
 public class LogicDispatcher extends ServerMessageDispatcher {
 
+    final int serverId;
     final DataCenter dataCenter;
     final DbCacheService dbCacheService;
 
     public LogicDispatcher(@Value("${socket.printLogger:false}") boolean printLogger,
+                           @Value("${sid}") int serverId,
                            DataCenter dataCenter, DbCacheService dbCacheService) {
-        super(printLogger, new String[]{LogicScan.class.getPackageName()});
+        super(printLogger);
+        this.serverId = serverId;
         this.dataCenter = dataCenter;
         this.dbCacheService = dbCacheService;
     }
@@ -43,7 +47,8 @@ public class LogicDispatcher extends ServerMessageDispatcher {
     @LogicStart
     @Order(5000)
     public void init(LogicSpringReflect context) {
-        super.initMapping(context.content());
+        super.initMapping(context.content(), new String[]{LogicScan.class.getPackageName()});
+        super.registerMessage(this.getClass().getClassLoader(), new String[]{PojoScan.class.getPackageName()});
     }
 
     @Override public void dispatch(SocketSession socketSession, int msgId, byte[] messageBytes) throws Exception {

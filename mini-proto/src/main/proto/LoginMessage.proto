@@ -1,0 +1,34 @@
+syntax = "proto3";
+//把文件拆分
+//option java_multiple_files = true;
+//导出包名
+option java_package = "wxdgaming.spring.minigame.proto";
+
+//执行同步等待消息
+message ReqHeart {
+    int64 milli             = 1;//当前毫秒
+}
+
+//执行同步等待消息
+message ResHeart {
+    int64 milli             = 1;//当前毫秒
+}
+
+message ReqLogin {
+    int32 serverId                  = 1;//区服id
+    string token                    = 2;//jwt token
+    string params                   = 3;//参数 json格式
+}
+
+message ResLogin {
+    int32 serverId                  = 1;//区服id
+    repeated RoleBean roleList      = 2;//角色列表
+}
+
+message RoleBean {
+    int64 uid                         = 1;//账号id
+    int64 rid                         = 2;//角色id
+    string name                       = 3;//角色名称
+    int32 level                       = 4;//等级
+    int64 exp                         = 5;//当前经验值
+}

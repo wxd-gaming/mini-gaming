@@ -9,7 +9,8 @@
         <version>1.0.1</version>
     </parent>
 
-    <artifactId>mini-cfg</artifactId>
+    <artifactId>mini-proto</artifactId>
+
 
 
 </project>

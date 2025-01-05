@@ -11,6 +11,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.PropertySource;
 import wxdgaming.spring.boot.core.SpringReflectContent;
 import wxdgaming.spring.boot.core.ann.LogicStart;
+import wxdgaming.spring.boot.core.threading.ThreadContext;
 import wxdgaming.spring.boot.data.batis.JdbcContext;
 import wxdgaming.spring.boot.loader.BootClassLoader;
 import wxdgaming.spring.boot.loader.ExtendLoader;
@@ -18,6 +19,7 @@ import wxdgaming.spring.boot.loader.LogbackExtendLoader;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
+import wxdgaming.spring.minigame.logic.module.dispatch.LogicDispatcher;
 import wxdgaming.spring.minigame.logic.module.dispatch.LogicRpcDispatcher;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 
@@ -118,13 +120,15 @@ public class LogicServerMain implements ILogicServerMain {
     }
 
     @Override
-    public void onReceive(SocketSession session) {
-
+    public void onReceive(SocketSession session, int msgId, byte[] messageBytes) throws Exception {
+        ThreadContext.putContent("sessionId", session.getUid());
+        LogicDispatcher dispatcher = childContext.getBean(LogicDispatcher.class);
+        dispatcher.dispatch(session, msgId, messageBytes);
     }
 
     @Override public void onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams) {
-        LogicRpcDispatcher logicRpcDispatcher = childContext.getBean(LogicRpcDispatcher.class);
-        logicRpcDispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
+        LogicRpcDispatcher dispatcher = childContext.getBean(LogicRpcDispatcher.class);
+        dispatcher.rpcReqSocketAction(session, rpcId, targetId, path, remoteParams);
     }
 
     @Override

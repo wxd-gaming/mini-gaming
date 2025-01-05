@@ -20,7 +20,7 @@ public interface ILogicServerMain {
 
     void onLogout();
 
-    void onReceive(SocketSession session);
+    void onReceive(SocketSession session, int msgId, byte[] messageBytes) throws Exception;
 
     void onReceiveRpc(SocketSession session, long rpcId, long targetId, String path, String remoteParams);
 
