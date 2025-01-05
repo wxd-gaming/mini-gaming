@@ -21,4 +21,5 @@ socket:
       sslProtocolType: TLSV12 # TLSV12  TLSV1 SSLV3 SSL
       jks_path: "jks/wxdtest-1.8.jks"
       jks_pwd_path: "jks/wxdtest-1.8.jks.pwd"
-      scanPkgs: ["code"]
+      scanHandlers: ["code"]
+      scanMessages: ["wxdgaming.spring.minigame.proto"]

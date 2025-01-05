@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 import wxdgaming.spring.boot.core.CoreScan;
 import wxdgaming.spring.boot.net.NetScan;
@@ -24,6 +25,7 @@ import java.io.IOException;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2025-01-05 11:06
  **/
+@Component
 @RunWith(SpringRunner.class)
 @SpringBootApplication()
 @SpringBootTest(classes = {CoreScan.class, NetScan.class, LoginTest.class})
@@ -34,8 +36,8 @@ public class LoginTest {
 
     @PostConstruct
     public void init() {
-        this.socketClient.scanMessage(springReflect);
-        this.socketClient.getClientMessageDecode().getDispatcher().registerMessage(this.getClass().getClassLoader(), PojoScan.class.getPackageName());
+        this.socketClient.scanHandlers(springReflect);
+        this.socketClient.scanMessages();
         this.socketClient.connect();
     }
 
@@ -55,9 +57,5 @@ public class LoginTest {
         }
     }
 
-    @ProtoMapper
-    public void resLogin(SocketSession session, LoginMessage.ResLogin resLogin) {
-        System.out.println("登录成功");
-    }
 
 }

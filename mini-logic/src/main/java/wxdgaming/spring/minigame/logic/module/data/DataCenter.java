@@ -18,7 +18,5 @@ import java.util.concurrent.ConcurrentSkipListMap;
 @Service
 public class DataCenter implements InitPrint {
 
-    /** session id 和 player id 映射关系 */
-    private final ConcurrentSkipListMap<Long, Long> sessionId2PlayerIdMap = new ConcurrentSkipListMap<>();
 
 }

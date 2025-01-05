@@ -1,8 +1,8 @@
 package wxdgaming.spring.minigame.proto;
 
 import io.protostuff.Tag;
-
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import wxdgaming.spring.boot.net.message.PojoBase;
  * rpc.proto
  *
  * @author: wxd-gaming(無心道, 15388152619)
- * @version: 2025-01-05 12:14:43
+ * @version: 2025-01-05 20:01:22
  */
 public class LoginMessage {
    /** 执行同步等待消息 */

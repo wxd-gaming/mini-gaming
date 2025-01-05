@@ -19,6 +19,7 @@ import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
 import wxdgaming.spring.minigame.proto.PojoScan;
 
+import java.util.Optional;
 import java.util.concurrent.Executor;
 
 /**
@@ -47,8 +48,8 @@ public class LogicDispatcher extends ServerMessageDispatcher {
     @LogicStart
     @Order(5000)
     public void init(LogicSpringReflect context) {
-        super.initMapping(context.content(), new String[]{LogicScan.class.getPackageName()});
-        super.registerMessage(this.getClass().getClassLoader(), new String[]{PojoScan.class.getPackageName()});
+        super.scanHandlers(context.content(), new String[]{LogicScan.class.getPackageName()});
+        super.scanMessages(this.getClass().getClassLoader(), new String[]{PojoScan.class.getPackageName()});
     }
 
     @Override public void dispatch(SocketSession socketSession, int msgId, byte[] messageBytes) throws Exception {
@@ -64,24 +65,17 @@ public class LogicDispatcher extends ServerMessageDispatcher {
     }
 
     @Override protected void executor(SocketSession socketSession, Executor executor, String queueName, Event event) {
+        Long playerId = socketSession.attribute("playerId");
+        Player player = null;
+        if (playerId != null && playerId > 0) {
+            player = dbCacheService.find(Player.class, playerId);
+            ThreadContext.putContent(player);
+        }
         if ("map".equals(queueName)) {
-            long sessionId = ThreadContext.context("sessionId");
-            Long playerId = dataCenter.getSessionId2PlayerIdMap().get(sessionId);
-            if (playerId == null) {
+            if (player == null) {
                 throw new RuntimeException("玩家还没有进入地图无法执行地图消息");
             }
-            Player player = dbCacheService.find(Player.class, playerId);
             queueName = queueName + "-" + player.getMapId();
-            ThreadContext.putContent(player);
-        } else {
-            long sessionId = ThreadContext.context("sessionId");
-            Long playerId = dataCenter.getSessionId2PlayerIdMap().get(sessionId);
-            if (playerId == null) {
-                throw new RuntimeException("玩家还没有进入地图无法执行地图消息");
-            }
-            Player player = dbCacheService.find(Player.class, playerId);
-            queueName = queueName + "-" + (player.getUid() % 10);
-            ThreadContext.putContent(player);
         }
         super.executor(socketSession, executor, queueName, event);
     }
