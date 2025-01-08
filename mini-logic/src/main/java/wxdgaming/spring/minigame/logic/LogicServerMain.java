@@ -96,7 +96,7 @@ public class LogicServerMain implements ILogicServerMain {
         Player player = new Player();
         player.setUid(System.nanoTime());
         player.setOpenId("test");
-        player.setNickName("test");
+        player.setName("test");
         dbCacheService.put(player);
 
         Player tmp = dbCacheService.find(Player.class, player.getUid());

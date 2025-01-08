@@ -1,6 +1,7 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import wxdgaming.spring.minigame.logic.module.cache.DbCacheService;
 import wxdgaming.spring.minigame.logic.module.data.DataCenter;
 import wxdgaming.spring.minigame.proto.PojoScan;
 
-import java.util.Optional;
 import java.util.concurrent.Executor;
 
 /**
@@ -76,6 +76,10 @@ public class LogicDispatcher extends ServerMessageDispatcher {
                 throw new RuntimeException("玩家还没有进入地图无法执行地图消息");
             }
             queueName = queueName + "-" + player.getMapId();
+        }
+        if (StringUtils.isNotBlank(queueName)) {
+            /*统一逻辑模块队列名*/
+            queueName = "s" + serverId + "." + queueName;
         }
         super.executor(socketSession, executor, queueName, event);
     }

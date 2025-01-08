@@ -31,14 +31,14 @@ public class GMSpi implements InitPrint {
     @RPC("/logic-rpc")
     @ExecutorWith(queueName = "gm")
     public String logicRpc(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc 区服：{} {} {}", sid, jsonObject.toString(), ThreadContext.queueName());
+        log.info("logic-rpc queue={} 区服：{} {}", ThreadContext.queueName(), sid, jsonObject.toString());
         return "logic-rpc-ok";
     }
 
     @RPC()
     @ExecutorWith(queueName = "gm")
     public String kickRole(SocketSession session, JSONObject jsonObject) {
-        log.info("logic-rpc 区服：{} {} {}", sid, jsonObject.toString(), ThreadContext.queueName());
+        log.info("logic-rpc queue={} 区服：{} {}", ThreadContext.queueName(), sid, jsonObject.toString());
         return "logic-rpc-ok";
     }
 

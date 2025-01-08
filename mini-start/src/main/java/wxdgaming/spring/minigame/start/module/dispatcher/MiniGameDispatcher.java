@@ -1,25 +1,18 @@
 package wxdgaming.spring.minigame.start.module.dispatcher;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 import wxdgaming.spring.boot.core.ann.LogicStart;
-import wxdgaming.spring.boot.core.threading.Event;
 import wxdgaming.spring.boot.net.MessageDispatcherHandler;
 import wxdgaming.spring.boot.net.SocketSession;
-import wxdgaming.spring.boot.net.message.PojoBase;
 import wxdgaming.spring.boot.net.message.SerializerUtil;
-import wxdgaming.spring.boot.net.server.ServerMessageDispatcher;
 import wxdgaming.spring.boot.net.server.SocketService;
 import wxdgaming.spring.minigame.proto.LoginMessage;
-import wxdgaming.spring.minigame.proto.PojoScan;
 import wxdgaming.spring.minigame.start.ILogicServerMain;
 import wxdgaming.spring.minigame.start.MiniGameSpringReflect;
-import wxdgaming.spring.minigame.start.MiniGameStartScan;
 import wxdgaming.spring.minigame.start.module.data.DataCenter;
-
-import java.util.concurrent.Executor;
 
 /**
  * 消息分发服务
@@ -27,6 +20,7 @@ import java.util.concurrent.Executor;
  * @author: wxd-gaming(無心道, 15388152619)
  * @version: 2024-12-16 16:33
  **/
+@Slf4j
 @Component
 public class MiniGameDispatcher extends MessageDispatcherHandler {
 
@@ -64,7 +58,8 @@ public class MiniGameDispatcher extends MessageDispatcherHandler {
         }
         ILogicServerMain iLogicServerMain = dataCenter.getServerMap().get(serverId);
         if (iLogicServerMain == null) {
-            throw new RuntimeException("服务器id异常");
+            log.error("区服({})不存在, msgId={}", serverId, msgId);
+            return;
         }
         iLogicServerMain.onReceive(socketSession, msgId, messageBytes);
     }

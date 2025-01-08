@@ -76,7 +76,7 @@ public class H2Test {
                     for (int i = 0; i < 10000; i++) {
                         Player slog = new Player();
                         slog.setUid(hexId.newId());
-                        slog.setNickName(String.valueOf(slog.getUid()));
+                        slog.setName(String.valueOf(slog.getUid()));
                         logs.add(slog);
                     }
                     long start = System.nanoTime();
@@ -96,7 +96,7 @@ public class H2Test {
                     for (int i = 0; i < 10000; i++) {
                         Player slog = new Player();
                         slog.setUid(hexId.newId());
-                        slog.setNickName(String.valueOf(slog.getUid()));
+                        slog.setName(String.valueOf(slog.getUid()));
                         logs.add(slog);
                     }
                     long start = System.nanoTime();
@@ -115,7 +115,7 @@ public class H2Test {
             for (int i = 0; i < 10; i++) {
                 Player slog = new Player();
                 slog.setUid(i + 1L);
-                slog.setNickName(String.valueOf(slog.getUid()));
+                slog.setName(String.valueOf(slog.getUid()));
                 logs.add(slog);
             }
             long start = System.nanoTime();

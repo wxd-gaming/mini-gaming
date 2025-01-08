@@ -1,5 +1,6 @@
 package wxdgaming.spring.minigame.logic.module.dispatch;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,14 @@ import java.util.concurrent.Executor;
 @Component
 public class LogicRpcDispatcher extends RpcDispatcher {
 
-    int sid = 0;
+    int serverId = 0;
 
     public LogicRpcDispatcher(
             @Value("${socket.printLogger:false}") boolean printLogger,
             @Value("${socket.rpc-token:getg6jhkopw435dvmkmcvx5y63-40}") String RPC_TOKEN,
-            @Value("${sid}") int sid) {
+            @Value("${sid}") int serverId) {
         super(printLogger, RPC_TOKEN, new String[]{LogicScan.class.getPackageName()});
-        this.sid = sid;
+        this.serverId = serverId;
     }
 
     @LogicStart
@@ -42,8 +43,9 @@ public class LogicRpcDispatcher extends RpcDispatcher {
     }
 
     @Override protected void execute(SocketSession session, Executor executor, String queueName, Event event) {
-        if (queueName.equals("gm")) {
-            queueName = "gm-" + sid;
+        if (StringUtils.isNotBlank(queueName)) {
+            /*统一逻辑模块队列名*/
+            queueName = "s" + serverId + "." + queueName;
         }
         super.execute(session, executor, queueName, event);
     }

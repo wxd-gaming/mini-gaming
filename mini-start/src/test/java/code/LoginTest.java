@@ -1,7 +1,7 @@
 package code;
 
+import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.PostConstruct;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 import wxdgaming.spring.boot.core.CoreScan;
+import wxdgaming.spring.boot.core.util.JwtUtils;
+import wxdgaming.spring.boot.core.util.StringsUtil;
 import wxdgaming.spring.boot.net.NetScan;
-import wxdgaming.spring.boot.net.ProtoMapper;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.boot.net.client.SocketClient;
 import wxdgaming.spring.minigame.proto.LoginMessage;
-import wxdgaming.spring.minigame.proto.PojoScan;
 
 import java.io.IOException;
 
@@ -47,12 +47,19 @@ public class LoginTest {
             System.in.read();
             SocketSession socketSession = this.socketClient.idleSession();
             if (socketSession != null) {
-                LoginMessage.ReqLogin pojoBase = new LoginMessage.ReqLogin()
-                        .setServerId(1)
-                        .setToken("123456")
-                        .setParams("{}");
-                socketSession.writeAndFlush(pojoBase);
-                System.out.println("发送登录消息");
+                for (int i = 1; i < 5; i++) {
+                    String compact = JwtUtils.createJwtBuilder("123456100000000000000000000000000000000L")
+                            .claims()
+                            .add("openId", String.valueOf(System.currentTimeMillis()))
+                            .and()
+                            .compact();
+                    LoginMessage.ReqLogin pojoBase = new LoginMessage.ReqLogin()
+                            .setServerId(i)
+                            .setToken(compact)
+                            .setParams(new JSONObject().fluentPut("ad", String.valueOf(StringsUtil.getRandomString(32))).toString());
+                    socketSession.writeAndFlush(pojoBase);
+                    System.out.println("发送登录消息：" + pojoBase.toString());
+                }
             }
         }
     }
