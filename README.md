@@ -15,6 +15,9 @@ gitee &nbsp;&nbsp;&nbsp;https://gitee.com/wxd-gaming<br>
 通过mini-cfg模块实现配置表读取，配置表支持动态更新；并且通过start模块的实现配置模块共享
 mini-logic真正的业务逻辑，通过start容器以子容器形式隔离加载模块，
 
+## 部署容器图
+![项目图片](logo.png)
+
 ## 模块介绍
 
 | 模块          | 说明                                | 
@@ -22,5 +25,6 @@ mini-logic真正的业务逻辑，通过start容器以子容器形式隔离加�
 | mini-cfg    | 配置表，读取和解析excel文件，可以共享数据           |
 | mini-entity | 实体类可共享内存                          |
 | mini-logic  | 游戏模块，包含游戏逻辑，游戏数据，游戏配置，游戏规则等       |
+| mini-proto  | protobuf 协议文件，包含游戏协议，游戏数据协议等      |
 | mini-start  | 启动模块容器模块，包含socket通信，http通信框架rpc框架 |
 
