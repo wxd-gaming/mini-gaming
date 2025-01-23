@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.threading.ExecutorWith;
 import wxdgaming.spring.boot.core.threading.ThreadContext;
-import wxdgaming.spring.boot.net.ProtoMapper;
+import wxdgaming.spring.boot.net.ProtoMapping;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.proto.LoginMessage;
 
@@ -16,7 +16,7 @@ import wxdgaming.spring.minigame.proto.LoginMessage;
 @Component
 public class LoginSpi {
 
-    @ProtoMapper
+    @ProtoMapping
     @ExecutorWith(queueName = "login")
     public void resLogin(SocketSession session, LoginMessage.ResLogin resLogin) {
         log.info("登录成功 queue={}, {}", ThreadContext.queueName(), resLogin.toString());

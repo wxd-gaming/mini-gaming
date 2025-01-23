@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import wxdgaming.spring.boot.core.threading.ExecutorWith;
 import wxdgaming.spring.boot.core.threading.ThreadContext;
 import wxdgaming.spring.boot.core.util.JwtUtils;
-import wxdgaming.spring.boot.net.ProtoMapper;
+import wxdgaming.spring.boot.net.ProtoMapping;
 import wxdgaming.spring.boot.net.SocketSession;
 import wxdgaming.spring.minigame.bean.entity.user.Player;
 import wxdgaming.spring.minigame.logic.module.login.LoginService;
@@ -31,7 +31,7 @@ public class LoginSpi {
 
     public LoginSpi(LoginService loginService) {this.loginService = loginService;}
 
-    @ProtoMapper
+    @ProtoMapping
     @ExecutorWith(queueName = "login")
     public void login(SocketSession session, LoginMessage.ReqLogin reqLogin) {
         Claims payload = JwtUtils.createJwtParser("123456100000000000000000000000000000000L")
